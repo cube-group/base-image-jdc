@@ -1,4 +1,11 @@
-FROM trion/jenkins-docker-client
+FROM jenkins/jenkins
+
+MAINTAINER lin2798003 development
+
+ENV JENKINS_USER=jenkins
+USER root
+RUN apk --no-cache add shadow su-exec
+RUN curl https://get.docker.com/builds/Linux/x86_64/docker-latest.tgz | tar xvz -C /tmp/ && mv /tmp/docker/docker /usr/bin/docker
 
 #alpine3.7
 
@@ -28,3 +35,7 @@ RUN rm -rf /etc/apk/repositories && \
 
 #nodejs
 RUN apk add nodejs
+
+COPY entrypoint.sh /usr/local/bin/
+
+ENTRYPOINT ["/sbin/tini", "--", "/usr/local/bin/entrypoint.sh"]
